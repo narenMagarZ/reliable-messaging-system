@@ -7,8 +7,8 @@
     "module": "node16"                        /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
     "allowJs": true                           /* Allow javascript files to be compiled. */,
     "sourceMap": true,                        /* Generates corresponding '.map' file. */
-    "outDir": "./dist"                        /* Redirect output structure to the directory. */,
-    "rootDir": "./src"                        /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
+    "outDir": ""                        /* Redirect output structure to the directory. */,
+    "rootDir": "."                      /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
 
     /* Strict Type-Checking Options */
     "strict": true                            /* Enable all strict type-checking options. */,
@@ -22,11 +22,6 @@
 
     /* Module Resolution Options */
     "moduleResolution": "node16",               /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */ 
-    "baseUrl": ".",                             /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
-    "typeRoots": [
-      "./src/types",
-      "./node_modules/@types"
-    ]                                         /* List of folders to include type definitions from. */,
     "types": ["node"],                           /* Type declaration files to be included in compilation. */
     "esModuleInterop": true                   /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
 
@@ -35,6 +30,6 @@
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */,
     "maxNodeModuleJsDepth": 10,
     "resolveJsonModule": true                 /* Enables importing .json files */,
-    "useUnknownInCatchVariables": true
-  },
+    "useUnknownInCatchVariables": true,
+  }
 }
