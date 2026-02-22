@@ -14,5 +14,8 @@ if (rootDirectoryPath) {
 }
 
 export const configs = {
-    port: Number(process.env["PORT"])
+    port: Number(process.env["PORT"]),
+    dbHost: process.env["DB_HOST"],
+    dbPort: process.env["DB_PORT"],
+    dbName: process.env["DB_NAME"]
 }
