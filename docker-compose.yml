@@ -1,9 +1,28 @@
 version: '3.0'
 
 services:
-  sender_service:
+  mongodb:
+    image: mongo:7-jammy
+    container_name: mongo_db
+    restart: unless-stopped
+    ports: 
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+  api:
     build: 
       context: .
-      dockerfile: sender-service/Dockerfile
+      dockerfile: Dockerfile
+      target: prod
+    container_name: api_v1
     ports:
-      - "5002:5002"
+      - "5001:5001"
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo_data:
+
+
