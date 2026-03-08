@@ -1,10 +1,12 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { HydratedDocument, Schema } from "mongoose";
 
 export interface IOutboxWorker {
 	status: string;
 	messageType: string;
 	content: object;
 }
+
+export type OutboxWorkerDocument = HydratedDocument<IOutboxWorker>
 
 const outboxWorkerSchema = new Schema<IOutboxWorker>(
 	{

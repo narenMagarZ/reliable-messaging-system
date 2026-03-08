@@ -11,7 +11,7 @@ export class MessageController {
     }
 
     public async getMessages() {
-        return this.messageService.findAll();
+        return this.messageService.findAll({});
     }
 
 }

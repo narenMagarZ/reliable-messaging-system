@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { HydratedDocument, Schema } from "mongoose";
 
 export interface IMessage {
 	from: string;
@@ -6,6 +6,8 @@ export interface IMessage {
 	content: string;
 	status: string;
 }
+
+export type MessageDocument = HydratedDocument<IMessage>
 
 const messageSchema = new Schema<IMessage>(
 	{

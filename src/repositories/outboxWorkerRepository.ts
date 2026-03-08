@@ -1,7 +1,7 @@
-import { IOutboxWorker, outboxWorkerModel } from "@src/models";
+import { IOutboxWorker, outboxWorkerModel, OutboxWorkerDocument } from "@src/models";
 import { BaseRepository } from "./baseRepository";
 
-export class OutboxWorkerRepository extends BaseRepository<IOutboxWorker> {
+export class OutboxWorkerRepository extends BaseRepository<IOutboxWorker, OutboxWorkerDocument> {
     constructor() {
         super(outboxWorkerModel);
     }

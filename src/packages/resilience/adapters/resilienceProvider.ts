@@ -1,3 +1,4 @@
 export interface IResilienceProvider {
-    wrap<T>(fn: () => Promise<T> | T): () => Promise<T> | T
+    wrap<T>(fn: () => Promise<T>): () => Promise<T>;
+    order: number;
 }

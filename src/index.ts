@@ -2,12 +2,14 @@ import { IncomingMessage, Server, ServerResponse } from "node:http";
 
 import Joi from "joi";
 import "module-alias/register";
+import cron from "node-cron";
 
 import { configs } from "@src/config";
 import { db } from "@src/database";
 import { MessageController } from "@src/controllers";
 import { IMessage } from "./models";
 import { normalizeError } from "./utils";
+import { MessageService, OutboxWorkerService } from "@src/services";
 
 // validate configs
 const configSchema = Joi.object({
@@ -26,7 +28,6 @@ if (error) {
 
 async function startApp() {
 	await db.connect();
-	console.log(db)
 
 	const server = new Server();
 
@@ -37,15 +38,15 @@ async function startApp() {
 
 	const router = async (req: IncomingMessage, res: ServerResponse) => {
 		if (req.url === "/api/v1/messages" && req.method === HttpMethod.POST) {
-			let rawData: string = '';
+			let rawData: string = "";
 			req.on("data", (data) => {
 				rawData += data.toString("utf-8");
 			});
 
-			res.on('error', () => {
+			res.on("error", () => {
 				res.statusCode = 400;
 				res.end();
-			})
+			});
 
 			req.on("end", async () => {
 				let body: IMessage;
@@ -69,8 +70,7 @@ async function startApp() {
 					};
 					await new MessageController().createMessage(input);
 					res.writeHead(201, { "content-type": "application/json" });
-					res.setHeader("Content-type", "application/json");
-					return res.end(
+					res.end(
 						JSON.stringify({
 							success: true,
 							message: "Message created successfully",
@@ -78,14 +78,15 @@ async function startApp() {
 					);
 				} catch (error) {
 					const normalizedError = normalizeError(error);
-					res.writeHead(500, { 'content-type': 'application/json' });
-					res.end(JSON.stringify({
-						success: false,
-						message: normalizedError.message
-					}));
+					res.writeHead(500, { "content-type": "application/json" });
+					res.end(
+						JSON.stringify({
+							success: false,
+							message: normalizedError.message,
+						}),
+					);
 				}
 			});
-
 		} else if (
 			req.url === "/api/v1/messages" &&
 			req.method === HttpMethod.GET
@@ -108,7 +109,7 @@ async function startApp() {
 	server.on("request", router);
 
 	server.on("error", (error) => {
-		console.error(error, 'error');
+		console.error(error, "error");
 	});
 
 	server.listen(configs.port, () => {
@@ -121,6 +122,11 @@ async function startApp() {
 
 	process.on("unhandledRejection", (reason) => {
 		console.log("Unhandled rejection", reason);
+	});
+
+	const worker = new OutboxWorkerService(new MessageService());
+	cron.schedule("* 5 * * * *", () => {
+		worker.processOutboxMessages();
 	});
 }
 

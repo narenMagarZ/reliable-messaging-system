@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { QueryFilter } from "mongoose";
 
-import { IMessage } from "@src/models";
+import { IMessage, MessageDocument } from "@src/models";
 import { MessageRepository, OutboxWorkerRepository } from "@src/repositories";
 
 export class MessageService {
@@ -16,7 +16,7 @@ export class MessageService {
 			const message = await this.repository.create(input);
 			await this.outboxWorkerRepository.create({
 				messageType: "message.published",
-				content: {},
+				content: { ...message },
 				status: "created",
 			});
 			return message;
@@ -24,11 +24,26 @@ export class MessageService {
 		return message;
 	}
 
-	public async findAll(): Promise<Array<IMessage>> {
+	public async findAll(params: {
+		status?: string;
+	}): Promise<Array<MessageDocument>> {
+		let filter: QueryFilter<IMessage> = {};
+		if (params.status) {
+			filter = { ...filter, status: params.status };
+		}
 		return this.repository.findAll(
-			{},
-			{ _id: 1, from: 1, content: 1, to: 1, status: 1 },
+			filter,
+			{ _id: 1, id: 1, from: 1, content: 1, to: 1, status: 1 },
 			{ sort: { createdAt: -1 } },
+		);
+	}
+
+	public async updateOne(id: string, input: Pick<IMessage, "status">) {
+		return this.repository.updateOne(
+			{
+				_id: id,
+			},
+			input,
 		);
 	}
 }
